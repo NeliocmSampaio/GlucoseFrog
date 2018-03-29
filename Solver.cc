@@ -1067,6 +1067,7 @@ bool Solver::sat2v()
   bool  flag = true;
   dualClause = 0;
   int fC;
+
   for(int i=0; i<clauses.size(); i++)
   {
     fC = clause_verification(clauses[i]);
@@ -1086,7 +1087,8 @@ bool Solver::sat2v()
 
       TCL cl;
       cl.vars.push_back(a);
-      //F.push_back( cl );
+      cl.vars.push_back(-1);
+      F.push_back( cl );
     }else
     {
       int a = var( c[0] ) + 1;
@@ -1110,7 +1112,7 @@ bool Solver::sat2v()
     flag = solve2sat();
   }//if
 
-  printf(flag ? "sat\n" : "unsat\n");
+  //printf(flag ? "sat\n" : "unsat\n");
   return flag;
 }//sat2_verification()
 

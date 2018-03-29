@@ -42,6 +42,11 @@ public:
 		(this->adj)[a].PB ( b );
 	}
 
+	void rem(Tv a)
+	{
+		(this->adj)[a].clear();
+	}
+
 	void CFC( V< V< Tv > > * components )
 	{
 		V< Pi > endingTime ( this->VN );
@@ -59,10 +64,9 @@ public:
 	{
 		V< V< Tv > >::iterator index;
 
-		Tc 	color [ this->VN ] = {0};
+		Tc 	color [ this->VN ];
 		Tv	v;
 		int i;
-
 
 		for ( i=0; i<this->VN; i++ )
 		{
@@ -115,12 +119,12 @@ public:
 			//printf("it: %d\n", *it);
 			if( color[*it] == UV )
 			{
-				//printf("v: %d\n", v);
-				//printf("*it: %d\n", *it);
+				printf("v: %d\n", v);
+				printf("*it: %d\n", *it);
 				vDfs( it, color, endingTime, time );
 			}
 		}
-		//printf("saiu. v: %d\n", v);
+		printf("saiu. v: %d\n", v);
 
 		*time = *time + 1;
 		(*endingTime)[ v ].first = *time;
@@ -233,7 +237,6 @@ public:
 
 	Tlit neg( int a )
 	{
-		//printf("a: %d\n", a);
 		if( a <= this->nbVar )
 			return (this->nbVar) + a;
 		else
@@ -242,8 +245,6 @@ public:
 
 	bool solve()
 	{
-		//this->print();
-		//printf("end %d\n", this->nbVar);
 		Graph G( (2*this->nbVar) );
 		TCL c;
 		int a, b;
@@ -251,16 +252,15 @@ public:
 		V< TCL >::iterator it;
 		for( it=this->FM.begin(); it!=this->FM.end(); it++ )
 		{
-			if(it->vars.size()==2)
+			if(it->vars[1] == -1)
+			{
+				G.rem(it->vars[0]);
+			}else
 			{
 				a = it->vars[0] < 0 ? this->nbVar+( it->vars[0] * -1 ) : it->vars[0];
 				b = it->vars[1] < 0 ? this->nbVar+( it->vars[1] * -1 ) : it->vars[1];
 				G.add( neg( a )-1, b-1 );
 				G.add( neg( b )-1, a-1 );
-/*				if(neg(a)-1 == -1 || b-1==-1 || neg(b)-1==-1 || a-1==-1 )
-				{
-					printf("%d, %d\n", a, it->vars[0]);
-				}*/
 			}
 		}
 
