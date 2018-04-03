@@ -1016,38 +1016,35 @@ bool Solver::simplify()
 
 vector< TCL > F;
 
-bool Solver::solve2sat()
+bool Solver::SV()
 {
   S s(nVars());
   for(int i=0; i<F.size(); i++)
   {
-    //printf("%d, %d\n", F[i].vars[0], F[i].vars[1]);
     s.add( &F[i] );
-  }//for
-  //printf("calling\n");
+  }
 
   return s.solve();
-}//solve2sat()
+}
 
-/*Mine*/
-int Solver::clause_verification( CRef& cr )
+int Solver::CV( CRef& cr )
 {
-  int trueLiteralsCounter = 0;
+  int A = 0;
 
   Clause& c = ca[ cr ];
 
   for( int i=0; i<c.size(); i++ )
   {
-    if( value(c[i]) == l_False )
+    if( value(c[i]) == l_False && var(c[i])!=-1)
     {
-      trueLiteralsCounter++;
-    }//if
-  }//for
+      A++;
+    }
+  }
 
-  return trueLiteralsCounter;
-}//clause_verification()
+  return A;
+}
 
-bool Solver::satisfied( CRef& cr )
+bool Solver::SD( CRef& cr )
 {
   Clause& c = ca[ cr ];
 
@@ -1056,26 +1053,26 @@ bool Solver::satisfied( CRef& cr )
     if( value(c[i]) == l_True )
     {
       return true;
-    }//if
-  }//for
+    }
+  }
 
   return false;
-}//clause_verification()
+}
 
-bool Solver::sat2v()
+bool Solver::VF()
 {
-  bool  flag = true;
-  dualClause = 0;
+  bool  f = true;
+  DC = 0;
   int fC;
 
   for(int i=0; i<clauses.size(); i++)
   {
-    fC = clause_verification(clauses[i]);
-    if( !satisfied(clauses[i]) && fC < 3 )
+    fC = CV(clauses[i]);
+    if( !SD(clauses[i]) && fC < 3 )
     {
-      flag = false;
+      f = false;
       break;
-    }//if
+    }
 
     Clause &c = ca[clauses[i]];
 
@@ -1087,7 +1084,7 @@ bool Solver::sat2v()
 
       TCL cl;
       cl.vars.push_back(a);
-      cl.vars.push_back(-1);
+      cl.vars.push_back(0);
       F.push_back( cl );
     }else
     {
@@ -1102,32 +1099,15 @@ bool Solver::sat2v()
       cl.vars.push_back(b);
       F.push_back( cl );
     }
-    dualClause++;
-  }//for
-  //printf("dual clauses: %d\n", dualClause);
+    DC++;
+  }
 
-  if( flag == true )
-  {
-    //printf("called 2sat\n");
-    flag = solve2sat();
-  }//if
+  if( f == true )
+    f = SV();
+  else F.clear();
 
-  //printf(flag ? "sat\n" : "unsat\n");
-  return flag;
-}//sat2_verification()
-
-void Solver::printFormula()
-{
-  Clause& c = ca[clauses[0]];
-
-  printf( "Formula:\n" );
-  for(int i=0; i<clauses.size(); i++)
-  {
-    c = ca[clauses[i]];
-    printClause(clauses[i]);
-    printf( "\n" );
-  }//for
-}//sat2_verification()
+  return f;
+}
 
 /*_________________________________________________________________________________________________
 |
@@ -1232,13 +1212,10 @@ lbool Solver::search(int nof_conflicts)
 	    return l_False;
 	  }
 
-    //printf("###FORMULA###\n");
-    //printFormula();
-    if(sat2v())
+    if(VF())
     {
-      printf("RETORNOOOOOOOOOOU\n");
       return l_True;
-    }//if
+    }
 
 	    // Perform clause database reduction !
 	    if(conflicts>=curRestart* nbclausesbeforereduce) 

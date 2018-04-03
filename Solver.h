@@ -131,7 +131,7 @@ public:
     vec<Lit>   conflict;          // If problem is unsatisfiable (possibly under assumptions),
                                   // this vector represent the final conflict clause expressed in the assumptions.
 
-    int     dualClause;
+    int     DC;
 
     // Mode of operation:
     //
@@ -174,11 +174,11 @@ public:
     uint64_t nbRemovedClauses,nbReducedClauses,nbDL2,nbBin,nbUn,nbReduceDB,solves, starts, decisions, rnd_decisions, propagations, conflicts,conflictsRestarts,nbstopsrestarts,nbstopsrestartssame,lastblockatrestart;
     uint64_t dec_vars, clauses_literals, learnts_literals, max_literals, tot_literals;
 
-    bool solve2sat();
-    int clause_verification( CRef& cr );
-    bool sat2v();
+    bool SV();
+    int CV( CRef& cr );
+    bool VF();
     void printFormula();
-    bool satisfied( CRef& cr );
+    bool SD( CRef& cr );
 
 
 protected:

@@ -60,85 +60,85 @@ public:
 
 	void DFS( V< V< Tv > > * C, V< Pi > ET )
 	{
-		Tc 	CL [ this->VN ];
+		Tc 	color [ this->VN ];
 		Tv	v;
 		int i;
 
 		for ( i=0; i<this->VN; i++ )
 		{
-			CL[i] = UV;
+			color[i] = UV;
 		}
 
 		for( i=0; i<ET.size(); i++ )
 		{
-			if( CL[ ET[i].second ] == UV )
+			if( color[ ET[i].second ] == UV )
 			{
-				V< Tv > a;
-				DFS( &a, ET[i].second, CL );
-				(*C).PB( a );
+				V< Tv > aux;
+				DFS( &aux, ET[i].second, color );
+				(*C).PB( aux );
 			}
 		}
 	}
 
-	void vDfs( V<Tv>::iterator v, Tc * CL, V< Pi > * ET, int * time )
+	void vDfs( V<Tv>::iterator v, Tc * color, V< Pi > * ET, int * time )
 	{
 		*time = *time + 1;
-		CL [ *v ] = UF;
+		color [ *v ] = UF;
 
 		V<Tv>::iterator it;
 
 		for( it=this->adj[*v].begin(); it!=this->adj[*v].end(); it++ )
 		{
-			if( CL[*it] == UV )
+			if( color[*it] == UV )
 			{
-				vDfs( it, CL, ET, time );
+				vDfs( it, color, ET, time );
 			}
 		}
 
 		*time = *time + 1;
 		(*ET)[ *v ].first = *time;
 		(*ET)[ *v ].second = *v;
-		CL [ *v ] = FN;
+		color [ *v ] = FN;
 	}
 
-	void vDfs( int v, Tc * CL, V< Pi > * ET, int * time )
+	void vDfs( int v, Tc * color, V< Pi > * ET, int * time )
 	{
 		*time = *time + 1;
-		CL [ v ] = UF;
+		color [ v ] = UF;
 
 		V<Tv>::iterator it;
 
 		for( it=this->adj[v].begin(); it!=this->adj[v].end(); it++ )
 		{
-			if( CL[*it] == UV )
+			if( color[*it] == UV )
 			{
-				vDfs( it, CL, ET, time );
+				vDfs( it, color, ET, time );
 			}
 		}
 
 		*time = *time + 1;
 		(*ET)[ v ].first = *time;
 		(*ET)[ v ].second = v;
-		CL [ v ] = FN;
+		color [ v ] = FN;
 	}
 
 	void DFS( V< Pi > * ET )
 	{
-		Tc 	CL [ this->VN ];
+		Tc 	color [ this->VN ];
 		Tv	v;
 		int time = 0;
 
 		int i;
 		for ( i=0; i<this->VN; i++ )
 		{
-			CL[i] = UV;
+			color[i] = UV;
 		}
 
 		for( i=0; i<(this->VN); i++ )
 		{
-			if( CL[i] == UV )
+			if( color[i] == UV )
 			{
-				vDfs( i, CL, ET, &time );
+				vDfs( i, color, ET, &time );
 			}
 		}
 	}
@@ -158,43 +158,43 @@ public:
 	}
 
 	void DFS( V< Tv > * C, 
-		V<Tv>::iterator v, Tc *CL )
+		V<Tv>::iterator v, Tc *color )
 	{
 		(*C).PB( *v );
 
-		CL [ *v ] = UF;
+		color [ *v ] = UF;
 
 		V< Tv >::iterator it;
 
 		for( it=this->adj[*v].begin(); it!=this->adj[*v].end(); it++ )
 		{
-			if( CL[ *it ] == UV )
+			if( color[ *it ] == UV )
 			{
-				DFS( C, it, CL );
+				DFS( C, it, color );
 			}
 		}
 
-		CL[ *v ] = FN;
+		color[ *v ] = FN;
 	}
 
 	void DFS( V< Tv > * C, 
-		int v, Tc *CL )
+		int v, Tc *color )
 	{
 		(*C).PB( v );
 
-		CL [ v ] = UF;
+		color [ v ] = UF;
 
 		V< Tv >::iterator it;
 
 		for( it=this->adj[v].begin(); it!=this->adj[v].end(); it++ )
 		{
-			if( CL[ *it ] == UV )
+			if( color[ *it ] == UV )
 			{
-				DFS( C, it, CL );
+				DFS( C, it, color );
 			}
 		}
 
-		CL[ v ] = FN;
+		color[ v ] = FN;
 	}
 };
 
