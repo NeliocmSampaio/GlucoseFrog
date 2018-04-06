@@ -1,0 +1,5 @@
+c
+c This is glucose 3.0 --  based on MiniSAT (Many thanks to MiniSAT team)
+c
+c WARNING: for repeatability, setting FPU to use double precision
+c ERROR! Could not open file: CNF

@@ -118,13 +118,13 @@ public:
 				vDfs( i, CL, ET, &t );
 	}
 
-	VD TRSP( Graph * g )
+	VD TRSP( Graph * G )
 	{
 		for( int i=0; i<VN; i++ )
 		{
 			V< Tv >IT it;
 			for( it=(adj)[i].begin(); it!=(adj)[i].end(); it++)
-				g->adj[*it].PB(i);
+				G->adj[*it].PB(i);
 		}
 	}
 
@@ -143,7 +143,7 @@ public:
 		CL[ *v ] = FN;
 	}
 
-	VD DFS( V< Tv > * C, int v, Tc *CL)
+	VD DFS( V< Tv > * C, int v, Tc *CL , bool f)
 	{
 		(*C).PB( v );
 
@@ -164,15 +164,17 @@ typedef struct TCL{
 }TCL;
 
 class S{
-public:
+private:
 	V< TCL > FM;
 	int nbVar;
 	int nbCl;
-
+public:
 	S ( int v )
 	{
 		nbVar		=	v;
 	}
+
+	S (){};
 
 	VD add( TCL * c )
 	{

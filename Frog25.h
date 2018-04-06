@@ -14,7 +14,6 @@ typedef void			VD;
 #define UV 				0
 #define	UF 				1
 #define	FN 				2
-#define IT 				::iterator
 typedef int 			Tlit;
 typedef std::pair<int, int> 	Pi;
 #define PB 				push_back
@@ -27,14 +26,24 @@ bool CMP( Pi a, Pi b )
 }
 
 class Graph{
-public:
+private:
 	V< Tv > * 		adj;
 	int					VN;
-
+public:
 	Graph( int v )
 	{
 		VN	=	v;
 		adj				=	new V< Tv > [v];
+	}
+
+	VD add( Tv a, Tv b)
+	{
+		(adj)[a].PB ( b );
+	}
+
+	VD rem(Tv a)
+	{ 
+		(adj)[a].clear();
 	}
 
 	VD CFC( V< V< Tv > > * C )
@@ -70,12 +79,12 @@ public:
 		}
 	}
 
-	VD vDfs( V<Tv>IT v, Tc * CL, V< Pi > * ET, int * t )
+	VD vDfs( V<Tv>::iterator v, Tc * CL, V< Pi > * ET, int * t )
 	{
 		*t = *t + 1;
 		CL [ *v ] = UF;
 
-		V<Tv>IT it;
+		V<Tv>::iterator it;
 
 		for( it=adj[*v].begin(); it!=adj[*v].end(); it++ )
 			if( CL[*it] == UV )
@@ -92,7 +101,7 @@ public:
 		*t = *t + 1;
 		CL [ v ] = UF;
 
-		V<Tv>IT it;
+		V<Tv>::iterator it;
 
 		for( it=adj[v].begin(); it!=adj[v].end(); it++ )
 			if( CL[*it] == UV )
@@ -118,23 +127,23 @@ public:
 				vDfs( i, CL, ET, &t );
 	}
 
-	VD TRSP( Graph * g )
+	VD TRSP( Graph * G )
 	{
 		for( int i=0; i<VN; i++ )
 		{
-			V< Tv >IT it;
+			V< Tv >::iterator it;
 			for( it=(adj)[i].begin(); it!=(adj)[i].end(); it++)
-				g->adj[*it].PB(i);
+				G->add( *it, i );
 		}
 	}
 
-	VD DFS( V< Tv > * C, V<Tv>IT v, Tc *CL )
+	VD DFS( V< Tv > * C, V<Tv>::iterator v, Tc *CL )
 	{
 		(*C).PB( *v );
 
 		CL [ *v ] = UF;
 
-		V< Tv >IT it;
+		V< Tv >::iterator it;
 
 		for( it=adj[*v].begin(); it!=adj[*v].end(); it++ )
 			if( CL[ *it ] == UV )
@@ -143,13 +152,13 @@ public:
 		CL[ *v ] = FN;
 	}
 
-	VD DFS( V< Tv > * C, int v, Tc *CL)
+	VD DFS( V< Tv > * C, int v, Tc *CL )
 	{
 		(*C).PB( v );
 
 		CL [ v ] = UF;
 
-		V< Tv >IT it;
+		V< Tv >::iterator it;
 
 		for( it=adj[v].begin(); it!=adj[v].end(); it++ )
 			if( CL[ *it ] == UV )
@@ -164,15 +173,17 @@ typedef struct TCL{
 }TCL;
 
 class S{
-public:
+private:
 	V< TCL > FM;
 	int nbVar;
 	int nbCl;
-
+public:
 	S ( int v )
 	{
 		nbVar		=	v;
 	}
+
+	S (){};
 
 	VD add( TCL * c )
 	{
@@ -182,7 +193,10 @@ public:
 
 	Tlit neg( int a )
 	{
-		return a<=nbVar ? nbVar + a : a-nbVar;
+		if( a <= nbVar )
+			return nbVar + a;
+		else
+			return (a-nbVar);
 	}
 
 	bool solve()
@@ -191,25 +205,25 @@ public:
 		TCL c;
 		int a, b, i, cMap[nbVar*2];
 
-		V< TCL >IT it;
+		V< TCL >::iterator it;
 		for( it=FM.begin(); it!=FM.end(); it++ )
 			if(it->vars[1] == 0)
 			{
 				a = it->vars[0] < 0 ? nbVar+( it->vars[0] * -1 ) : it->vars[0];
-				G.adj[neg(a)-1].clear();
+				G.rem(neg( a )-1);
 			}else
 			{
 				a = it->vars[0] < 0 ? nbVar+( it->vars[0] * -1 ) : it->vars[0];
 				b = it->vars[1] < 0 ? nbVar+( it->vars[1] * -1 ) : it->vars[1];
-				G.adj[neg( a )-1].PB(b-1);
-				G.adj[neg( b )-1].PB(a-1);
+				G.add( neg( a )-1, b-1 );
+				G.add( neg( b )-1, a-1 );
 			}
 
 		V< V<Tv> > C;
 		G.CFC( &C );
 
-		V< V<Tv> >IT itVec;
-		V< Tv >IT itIn;
+		V< V<Tv> >::iterator itVec;
+		V< Tv >::iterator itIn;
 		for( itVec=C.begin(), i=0; itVec!=C.end(); itVec++, i++ )
 			for( itIn=itVec->begin(); itIn!=itVec->end(); itIn++ )
 				cMap[ *itIn ] = i;
