@@ -42,31 +42,12 @@ public:
 		V< Pi > ET ( VN );
 		Graph T ( VN );
 
-		Tc 	CL [ VN ];
-
-		int t = 0, i;
-
-		for ( i=0; i<VN; i++ )
-			CL[i] = UV;
-
-		for( i=0; i<(VN); i++ )
-			if( CL[i] == UV )
-				vDfs( i, CL, &ET, &t, 1 );
-
+		DFS( &ET );
 		sort( ET.begin(), ET.begin()+VN, CMP);
 
 		TRSP( &T );
 
-		for ( i=0; i<VN; i++ )
-			CL[i] = UV;
-
-		for( i=0; i<ET.size(); i++ )
-			if( CL[ ET[i].second ] == UV )
-			{
-				V< Tv > a;
-				DFS( &a, ET[i].second, CL );
-				(*C).PB( a );
-			}
+		T.DFS( C, ET );
 	}
 
 	VD DFS( V< Tv > * C, int v, Tc *CL)
@@ -84,10 +65,46 @@ public:
 		CL[ v ] = FN;
 	}
 
+	VD DFS( V< V< Tv > > * C, V< Pi > ET )
+	{
+		Tc 	CL [ VN ];
+		Tv	v;
+		int i;
+
+		for ( i=0; i<VN; i++ )
+			CL[i] = UV;
+
+		for( i=0; i<ET.size(); i++ )
+		{
+			if( CL[ ET[i].second ] == UV )
+			{
+				V< Tv > a;
+				DFS( &a, ET[i].second, CL );
+				(*C).PB( a );
+			}
+		}
+	}
+/*
+	VD vDfs( V<Tv>IT v, Tc * CL, V< Pi > * ET, int * t )
+	{
+		*t = *t + 1;
+		CL [ *v ] = UF;
+
+		V<Tv>IT it;
+
+		for( it=adj[*v].begin(); it!=adj[*v].end(); it++ )
+			if( CL[*it] == UV )
+				vDfs( it, CL, ET, t );
+
+		*t += 1;
+		(*ET)[ *v ].first = *t;
+		(*ET)[ *v ].second = *v;
+		CL [ *v ] = FN;
+	}*/
+
 	VD vDfs( int v, Tc * CL, V< Pi > * ET, int * t, int a )
 	{
-		//*t = *t + 1;
-		*t += 1;
+		*t = *t + 1;
 		CL [ v ] = UF;
 
 		V<Tv>IT it;
@@ -102,6 +119,20 @@ public:
 		CL [ v ] = FN;
 	}
 
+	VD DFS( V< Pi > * ET )
+	{
+		Tc 	CL [ VN ];
+		Tv	v;
+		int t = 0, i;
+
+		for ( i=0; i<VN; i++ )
+			CL[i] = UV;
+
+		for( i=0; i<(VN); i++ )
+			if( CL[i] == UV )
+				vDfs( i, CL, ET, &t, 1 );
+	}
+
 	VD TRSP( Graph * g )
 	{
 		for( int i=0; i<VN; i++ )
@@ -111,6 +142,21 @@ public:
 				g->adj[*it].PB(i);
 		}
 	}
+
+	/*VD DFS( V< Tv > * C, V<Tv>IT v, Tc *CL )
+	{
+		(*C).PB( *v );
+
+		CL [ *v ] = UF;
+
+		V< Tv >IT it;
+
+		for( it=adj[*v].begin(); it!=adj[*v].end(); it++ )
+			if( CL[ *it ] == UV )
+				DFS( C, it, CL );
+
+		CL[ *v ] = FN;
+	}*/
 };
 
 typedef struct TCL{
